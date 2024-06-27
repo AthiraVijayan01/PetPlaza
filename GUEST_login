@@ -1,0 +1,55 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <%
+            String msg = "";
+            if (request.getParameter("btnsave") != null) {
+
+                String sel1 = "select * from tbl_user where user_email='" + request.getParameter("email") + "' and user_password='" + request.getParameter("pass") + "'";
+                ResultSet rs1 = con.selectCommand(sel1);
+                String sel5 = "select * From tbl_admin where admin_username='" + request.getParameter("email") + "' and admin_password='" + request.getParameter("pass") + "'";
+                ResultSet rs5 = con.selectCommand(sel5);
+                if (rs1.next()) {
+                    session.setAttribute("lgid", rs1.getString("user_id"));
+                    response.sendRedirect("../User/HomePage.jsp");
+                } else if (rs5.next()) {
+                    response.sendRedirect("../Admin/HomePage.jsp");
+                } else {
+                    msg = "Invalid Login!!!";
+                }
+            }
+        %>
+         <div id="tab">
+        <form method="post">
+            <table border="1" align="center" cellpadding="10">
+                <tr>                   
+                    <td>Username/Email</td>
+                    <td><input type="text" name="email" required=""</td>
+                </tr>
+                <tr> 
+                    <td>Password</td>
+                    <td><input type="password" name="pass" required=""</td>
+                </tr>
+                                <tr> 
+                    <td colspan="2" align="center">
+                        <input type="submit" name="btnsave" value="Login">
+                        <input type="reset" name="btncancel" value="Cancel"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <%=msg%>
+                    </td>
+                </tr>
+</table>
+        </form></div>
+    </body>
+</html>
+
