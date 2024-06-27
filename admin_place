@@ -1,0 +1,101 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>PET PLAZA</title>
+    </head>
+    <br><br><br><br><br>
+    <body>
+        <%@include file="Header.jsp" %>
+        <%
+            if(request.getParameter("btn_submit")!=null)
+            {
+                String seld="select * from tbl_place where place_name='"+request.getParameter("txt_place")+"'";
+                ResultSet rsd=con.selectCommand(seld);
+                if(rsd.next())
+                {
+                    %>
+                    <script>alert('Already Exist')</script>
+                    <%                }
+                else
+                { String ins="insert into tbl_place(place_name,district_id)values('"+request.getParameter("txt_place")+"','"+request.getParameter("ddl_district")+"')";
+               con.executeCommand(ins);
+                }              }
+             if(request.getParameter("did")!=null)
+            {
+            String dl="delete from tbl_place where place_id='"+request.getParameter("did")+"'";
+            con.executeCommand(dl);
+            response.sendRedirect("Place.jsp");
+            }
+        %>  <h1 align="center">Place</h1>
+        <form method="post">
+             <div id="tab">
+            <table border="1" align="center" cellpadding="10">
+                <tr>
+                    <td> District : </td>
+                    <td>
+                        <select name="ddl_district">
+                            <option>--Select District--</option>
+                            <%
+                             String sel="select * from tbl_district";
+                             ResultSet res =con.selectCommand(sel);
+                             while(res.next())
+                                 {
+                            %>
+                            <option value="<%=res.getString("district_id")%>"><%=res.getString("district_name")%></option>
+                            <%
+                                }
+                            %>
+                    </td>
+                </tr>  <tr>
+                    <td>Place</td>
+                    <td><input type="text" name="txt_place" placeholder="Enter Place"></td>
+                </tr>
+                 <tr>
+                    <td colspan="2">
+                        <div align="center">
+                            <input type="submit" name="btn_submit" value="Save">
+                            <input type="reset" name="btn_reset" value="Cancel">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+                    <br>
+                    <br>
+                    <table align="center" border="1">
+                        <tr>
+                            <th> S.No</th>
+                            <th>Place</th>
+                            <th>District</th>
+                            <th>Action</th>
+                        </tr>
+                            <%
+                                int i=0;
+                                String sel1="select * from tbl_place p inner join tbl_district d on d.district_id=p.district_id";
+                               // out.print(sel1);
+                                ResultSet rs =con.selectCommand(sel1);
+                while(rs.next())
+                {
+                    i++;
+            
+            %>
+                     <tr>
+                         <td><%=i%></td>
+                         <td> <%=rs.getString("place_name")%></td>
+                         <td><%=rs.getString("district_name")%></td>
+                         <td><a href="Place.jsp?did=<%=rs.getString("place_id")%>">Delete</a></td>
+   <%
+                        }
+                     %>
+                               </tr>
+                    </table>
+        </form></div>
+    </body>
+    <br><br><br><br><br>
+    <%@include file="Footer.jsp" %>
+</html>
+
