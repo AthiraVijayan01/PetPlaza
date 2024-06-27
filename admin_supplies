@@ -1,0 +1,103 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>PET PLAZA</title>
+    </head>
+    <br><br><br><br><br>
+    <body>
+        <%@include file="Header.jsp" %>
+<% if(request.getParameter("did")!=null)
+            {
+            String del="delete from tbl_supplies where supplies_id='"+request.getParameter("did")+"'";
+            con.executeCommand(del);
+            response.sendRedirect("Supplies.jsp");
+            }            %>
+        <a href="Food.jsp"></a>
+        <h1 align="center">Supplies</h1>
+         <div id="tab">
+        <form method="post" enctype="multipart/form-data" action="../Assets/Actionpages/Suppliesaction.jsp">
+            <table border="1" align="center" cellpadding="10">
+                 <tr>
+                    <td>Name:</td>
+                    <td><input type="text"name="txt_name" placeholder="Enter Name"></td>
+                </tr> 
+                <tr>
+                    <td>Pet Type:</td>
+                    <td><select name="ddl_pettype" onchange="getBreed(this.value)">
+                <option>---Select Breed---</option>
+                <%
+                    String sel="select*from tbl_pettype";
+                    ResultSet res1=con.selectCommand(sel);
+                    while(res1.next())
+                    {
+                %>
+<option value="<%=res1.getString("pettype_id")%>"><%=res1.getString("pettype_name")%>
+</option>
+        <%
+                    }   %>
+                        </select></td>    
+            </tr>
+                <tr>
+                    <td>Breed Type:</td>
+                    <td><select name="ddl_breed" id="ddl_breed">
+                            <option value="">---Select Breed Type---</option></select>
+                    </td>                 </tr>
+                 <tr>
+                    <td>Image:</td>
+                      <td><input type="file" name="image"></td>
+                    <tr>
+                    <td>Rate:</td>
+                    <td><input type="text"name="rate"placeholder="Enter Rate"</td>
+                </tr>   
+                 <tr>
+                    <td colspan="2" align="center">
+                        <input type="submit" name="btn_submit" value="Save">
+                        <input type="reset" name="btn_reset" value="Cancel">
+                    </td>
+                </tr>
+            </table>
+                  <br>
+           <table border="1" align="center" cellpadding="10">
+                <tr>
+                    <th>S.No</th>
+                    <th>Cloth Type</th>
+                    <th>Action</th>
+                </tr>
+            <%
+                int i=0;
+                String sel2="select * from tbl_supplies";
+                ResultSet res2 =con.selectCommand(sel2);
+                while(res2.next())
+                {
+                    i++;                         %>
+            <tr>
+                <td><%=i%></td>
+                <td><%=res2.getString("supplies_name")%></td>
+                <td><a href="Supplies.jsp?did=<%=res2.getString("supplies_id")%>">Delete</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="Addstock.jsp?sid=<%=res2.getString("supplies_id")%>">Add Stock</a></td>
+            </tr>
+                        <%
+                }
+                %>
+              </table>
+        </form></div>
+    </body>
+    <br><br><br><br><br>
+    <%@include file="Footer.jsp" %>
+ <script src="../Assets/JQ/jQuery.js"></script>
+<script>
+function getBreed(did)
+{
+$.ajax({
+	  url:"../Assets/AjaxPages/Ajaxbreed.jsp?did="+did,
+	  success: function(result){
+		$("#ddl_breed").html(result);
+	  } }); }
+</script>   
+</html>
+
