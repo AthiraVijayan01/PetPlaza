@@ -1,0 +1,69 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="connect"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+        <style>
+            .green{
+                background-color: green;
+                //text-emphasis-color: green;
+            }
+            .red{
+                background-color: red;
+            }
+        </style>
+    </head>
+    <br><br><br><br><br>
+    <body>
+        <%@include file="Header.jsp" %>
+        <br><br><br><br><br><br>
+       <table border="1" align="center" cellpadding="10" style="border-collapse: collapse">
+            <tr>
+                <th>SI.No</th>
+                <th>Product Name</th>
+                <th>Order Qty</th>
+                <th>Username</th>
+                <th>Address</th>
+                <th>Contact</th>
+                <th>Payment Status</th>
+            </tr>
+                <%
+                int i = 0;
+                String sel = "select * from tbl_cartbody cb inner join tbl_product p on p.product_id=cb.product_id inner join tbl_company c on c.company_id=p.company_id inner join tbl_carthead ch on ch.cart_id=cb.cart_id inner join tbl_user u on u.user_id=ch.user_id where p.company_id='"+session.getAttribute("companyid")+"'";
+                ResultSet rsc = connect.selectCommand(sel);
+
+             while (rsc.next()) {
+                    i++;
+            %>
+            <tr>
+                <td><%=i%></td>
+                <td><%=rsc.getString("product_name")%></td>
+                <td><%=rsc.getString("cart_qty")%></td>
+                <td><%=rsc.getString("user_name")%></td>
+                <td><%=rsc.getString("user_address")%></td>
+                <td><%=rsc.getString("user_contact")%></td>
+                <%
+                if(rsc.getString("payment_status").equals("1"))
+                {
+                    %>
+                    <td class="green"> <div>Payment Completed</div></td>
+                    <%
+                }
+                else{
+                      %>
+                    <td class="red"> <div>Payment Pending..</div></td>
+                                      <%
+                }
+                %>            </tr><%
+                }
+  %>
+            </table>
+    </body>
+    <br><br><br><br><br>
+       <%@include file="Footer.jsp" %>
+</html>
+
