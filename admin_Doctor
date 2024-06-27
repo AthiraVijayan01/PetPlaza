@@ -1,0 +1,117 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <a href="Doctor.jsp"></a>
+    <a href="Food.jsp"></a>
+        <title>PET PLAZA</title>
+    </head>
+    <br><br><br><br><br>
+    <body>
+      <%@include file="Header.jsp" %>
+        <h1 align="center">Doctor Registration</h1>
+        <br><br>
+         <div id="tab">
+        <form method="post" enctype="multipart/form-data" action="../Assets/Actionpages/Doctoraction.jsp">
+            <table align="center" border="1" cellpadding="5">
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text"name="txt_name"placeholder="enter the name"</td>
+                </tr>  
+                <tr>
+                    <td>Gender:</td>
+                    <td>
+                    <input type="radio"name="txt_gender"value="male">Male
+                    <input type="radio"name="txt_gender"value="Female">Female</td>
+                </tr>  
+                <tr>
+                    <td>DOB:</td>
+                    <td><input type="date"name="txt_dob"</td>
+                </tr>  
+                <tr>
+                    <td>Contact:</td>
+                <td><input type="text" name="cont" placeholder="Enter number"></td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="email" name="txt_email" placeholder="enter the email"</td>
+                </tr> 
+                <tr>
+                    <td>District:</td>
+                    <td><select name="ddl_district" onchange="getPlace(this.value)">
+                <option>---Select district---</option>
+                <%
+                    String sel="select*from tbl_district";
+                    ResultSet res1=con.selectCommand(sel);
+                    while(res1.next())
+                    {
+                %>
+                        <option value="<%=res1.getString("district_id")%>"><%=res1.getString("district_name")%></option>
+                        <%
+                    }
+                        %>
+                        </select></td>    
+            </tr>
+                <tr>
+                    <td>Place:</td>
+                    <td><select name="ddl_place" id="ddl_place">
+                            <option value="">---Select Place---</option></select>
+                    </td>
+                 </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td><textarea name="txt_add" row="5" cols="20"></textarea></td>
+                </tr>  
+                  <tr>
+                    <td>Qualification:</td>
+                    <td><input type="text"name="txt_qualification"placeholder="Enter qualification"</td>
+                </tr>  
+                <tr>
+                    <td>Aadhar Number:</td>
+                    <td><input type="text"name="txt_aadhar"placeholder="Enter Aadhar"</td>
+                </tr>  
+                <tr>
+                    <td>Licence image:</td>
+                    <td><input type="file" name="liseimg"></td>
+                </tr>  
+                <tr>
+                    <td>Doctor image:</td>     
+                    <td><input type="file" name="image"></td>
+                </tr>  
+               <tr>
+                    <td>Password:</td>
+                    <td><input type="password" name="pass" placeholder="Enter password"></td>
+                </tr>
+                <tr>
+                     <td>Conform Password:</td>
+                    <td><input type="password" name="conpass" placeholder="Re-enter password"></td>
+                </tr> 
+             <tr>
+                    <td colspan="2"align="center">
+                <input type="submit"name="btn_submit"value="save">
+                <input type="reset"name="btn_reset"value="cancel">
+                    </td>
+                </tr>       
+            </table>
+        </form></div>
+     </body>
+     <br><br><br><br><br>
+     <%@include file="Footer.jsp" %>
+     <script src="../Assets/JQ/jQuery.js"></script>
+<script>
+function getPlace(did)
+{
+	$.ajax({
+	  url:"../Assets/AjaxPages/Ajaxplace.jsp?did="+did,
+	  success: function(result){
+		$("#ddl_place").html(result);
+	  }
+	});
+}
+</script>
+</html>
+
