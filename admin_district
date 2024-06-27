@@ -1,0 +1,88 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>PET PLAZA</title>
+    </head>
+    <br><br><br><br><br>
+    <body>
+        <%@include file="Header.jsp" %>
+        <%
+            if(request.getParameter("btn_submit")!=null)
+            {
+                String seld="select * from tbl_district where district_id='"+request.getParameter("txt_district")+"'";
+                ResultSet rsd=con.selectCommand(seld);
+                if(rsd.next())
+                { 
+                    %>
+                    <script>alert('Already Exist')</script>
+                    <%
+                }
+                else
+                {
+                String ins="insert into tbl_district(district_name)values('"+request.getParameter("txt_district")+"')";
+                con.executeCommand(ins);
+            }
+            
+            }  
+            
+            if(request.getParameter("did")!=null)
+            {
+            String del="delete from tbl_district where district_id='"+request.getParameter("did")+"'";
+            con.executeCommand(del);
+            response.sendRedirect("District.jsp");
+            }
+            
+            %>
+        <h1 align="center">District Details</h1>
+         <div id="tab">
+        <form method="post">
+            <table border="1" align="center" cellpadding="10">
+                <tr>
+                    <td>District :</td>
+                    <td><input type="text" name="txt_district"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div align="center">
+                            <input type="submit" name="btn_submit" value="Save">
+                            <input type="reset" name="btn_reset" value="Cancel">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <br>
+               <table border="1" align="center" cellpadding="10">
+                <tr>
+                    <th>S.No</th>
+                    <th>District</th>
+                    <th>Action</th>
+                </tr>
+            <%
+                int i=0;
+                String sel="select * from tbl_district";
+                ResultSet res1 =con.selectCommand(sel);
+                while(res1.next())
+                {
+                    i++;
+            %>
+            <tr>
+                <td><%=i%></td>
+                <td><%=res1.getString("district_name")%></td>
+                <td><a href="District.jsp?did=<%=res1.getString("district_id")%>">Delete</a></td>
+            </tr>
+            <%
+                }
+                %>
+              </table>
+        </form></div>
+    </body>
+    <br><br><br><br><br>
+    <%@include file="Footer.jsp" %>
+</html>
+
