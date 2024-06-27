@@ -1,0 +1,180 @@
+
+<%@page import="java.sql.ResultSet"%>
+<jsp:useBean class="DB.ConnectionClass" id="con"></jsp:useBean>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Stock Of Products
+        </title>
+    </head>
+    <br><br><br><br><br>
+    <body>
+        <%@include file="Header.jsp" %>
+        <%
+            int stock=0,qty=0;
+            if(request.getParameter("btns")!=null){
+                 qty=Integer.parseInt(request.getParameter("txtstock"));
+                String sels="select * from tbl_suppliesstock where supplies_id='"+request.getParameter("sid")+"'";
+                ResultSet rss=con.selectCommand(sels);
+                if(rss.next()){
+                   stock=Integer.parseInt(rss.getString("supplies_qty"));
+                   stock=stock+qty;
+                   String up="update tbl_suppliesstock set supplies_qty='"+stock+"' where supplies_id='"+request.getParameter("sid")+"'";
+                   con.executeCommand(up);
+                }
+                else{
+                    String insQry="insert into tbl_suppliesstock(supplies_id,supplies_qty)values('"+request.getParameter("sid")+"','"+qty+"')";
+                    con.executeCommand(insQry);
+                }
+            }
+               if(request.getParameter("btnf")!=null){
+                 qty=Integer.parseInt(request.getParameter("txtfstock"));
+                String sels="select * from tbl_foodstock where food_id='"+request.getParameter("fid")+"'";
+                ResultSet rss=con.selectCommand(sels);
+                if(rss.next()){
+                   stock=Integer.parseInt(rss.getString("food_qty"));
+                                     stock=stock+qty;
+                   String up="update tbl_foodstock set food_qty='"+stock+"' where food_id='"+request.getParameter("fid")+"'";
+                   con.executeCommand(up);
+                }
+                else{
+                    String insQry="insert into tbl_foodstock(food_id,food_qty)values('"+request.getParameter("fid")+"','"+qty+"')";
+                    con.executeCommand(insQry);
+                }
+            }
+               if(request.getParameter("btnc")!=null){
+                 qty=Integer.parseInt(request.getParameter("txtcstock"));
+                String sels="select * from tbl_clothstock where clothing_id='"+request.getParameter("cid")+"'";
+                ResultSet rss=con.selectCommand(sels);
+                if(rss.next()){
+                   stock=Integer.parseInt(rss.getString("cloth_qty"));
+                                     stock=stock+qty;
+                   String up="update tbl_clothtock set cloth_qty='"+stock+"' where cloth_id='"+request.getParameter("cid")+"'";
+                   con.executeCommand(up);
+                }
+                else{
+                    String insQry="insert into tbl_clothstock(cloth_id,cloth_qty)values('"+request.getParameter("cid")+"','"+qty+"')";
+                    con.executeCommand(insQry);
+                }
+            }
+        %>
+        <div id="tab">
+        <form method="post">
+            <%
+                if(request.getParameter("sid")!=null){
+                    String sel="select * from tbl_supplies where supplies_id='"+request.getParameter("sid")+"'";
+                    ResultSet rs=con.selectCommand(sel);
+                    rs.next();
+                    %>
+                    <table align="center">
+                        <tr>
+                            <td colspan="2" align="center">
+                                <img src="../Assets/Suppliesimage/<%=rs.getString("supplies_image")%>" width="150" height="150">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Name :
+                            </td>
+                            <td>
+                                <%=rs.getString("supplies_name")%>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Stock Quantity
+                            </td>
+                            <td>
+                                <input type="text" name="txtstock" autocomplete="off" required="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <input type="submit" value="Add" name="btns"> <input type="reset" value="Cancel" name="btnc">
+                            </td>
+                        </tr>
+                    </table>
+                    <%
+                }
+            %>
+            <%
+                if(request.getParameter("fid")!=null){
+                    String sel="select * from tbl_food where food_id='"+request.getParameter("fid")+"'";
+                    ResultSet rs=con.selectCommand(sel);
+                    rs.next();
+                    %>
+                    <table align="center">
+                        <tr>
+                            <td colspan="2" align="center">
+                                <img src="../Assets/Foodimage/<%=rs.getString("food_image")%>" width="150" height="150">
+                            </td></tr>
+                        <tr><td>
+                         Name :
+                            </td>
+                            <td>
+                                <%=rs.getString("food_name")%>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Stock Quantity
+                            </td>
+                            <td>
+                                <input type="text" name="txtfstock" autocomplete="off" required="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <input type="submit" value="Add" name="btnf"> <input type="reset" value="Cancel" name="btnc">
+                            </td>
+                        </tr>
+                    </table>
+                    <%
+                }
+            %>
+            <%
+                if(request.getParameter("cid")!=null){
+                    String sel="select * from tbl_clothing where clothing_id='"+request.getParameter("cid")+"'";
+                    ResultSet rs=con.selectCommand(sel);
+                    rs.next();
+                    %>
+                    <table align="center">
+                        <tr>
+                            <td colspan="2" align="center">
+                                <img src="../Assets/Clothimage/<%=rs.getString("clothing_image")%>" width="150" height="150">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Name :
+                            </td>
+                            <td>
+                                <%=rs.getString("clothing_name")%>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Stock Quantity
+                            </td>
+                            <td>
+                                <input type="text" name="txtcstock" autocomplete="off" required="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <input type="submit" value="Add" name="btnc"> <input type="reset" value="Cancel" name="btnc">
+                            </td>
+                        </tr>
+                    </table>
+                    <%
+                }
+            %> 
+        </form>
+        </div>
+    </body>
+    <br><br><br><br><br>
+    <%@include file="Footer.jsp" %>
+</html>
+
